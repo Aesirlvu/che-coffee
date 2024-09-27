@@ -2,9 +2,9 @@ import { createJwt } from "../helpers/createJwt.js";
 import { createUser, getUserByCredentials } from "../models/user.model.js";
 
 export const signInCtrl = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     const user = await getUserByCredentials(email, password);
 
     if (!user) {
@@ -23,15 +23,29 @@ export const signInCtrl = async (req, res) => {
 
 export const signUpCtrl = async (req, res) => {
   try {
-    // ! Completar la función signUpCtrl
+    const { username, email, password } = req.body;
+
+    const newUser = await createUser(username, email, password);
+
+    res
+      .status(201)
+      .json({ message: "Usuario creado.", status: "success", newUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const signOutCtrl = (_req, res) => {
+export const signOutCtrl = (req, res) => {
   try {
-    // ! Completar la función signOutCtrl
+    req.session.destroy((err) => {
+      if (err) {
+        return res
+          .status(400)
+          .json({ message: "Error al cerrar sesión", status: "Error" });
+      }
+      res.clearCookie("authToken");
+    });
+
     res.status(200).json({ message: "Sign out success" });
   } catch (error) {
     res.status(500).json({ message: error.message });

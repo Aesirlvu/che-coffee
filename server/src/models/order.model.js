@@ -16,7 +16,9 @@ export const createOrder = (coffee, userId) => {
 };
 
 export const getOrders = (userId) => {
-  return ordersCollection.filter((coffee) => coffee.userId === userId);
+  const orders = ordersCollection.filter((coffee) => coffee.userId === userId);
+
+  return JSON.stringify(orders);
 };
 
 // ! FALTA IMPLEMENTAR (NO SE USA EN EL PROYECTO)

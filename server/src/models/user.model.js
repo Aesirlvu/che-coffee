@@ -5,20 +5,24 @@ const usersCollection = [];
 
 // Función para crear un usuario
 export const createUser = async (user) => {
-  const { password } = user;
-  const salt = await genSalt(10);
-  const hashedPassword = await hash(password, salt);
+  const { username, email, password } = user;
 
-  const newUser = {
-    // Generate a random id
-    id: crypto.randomUUID().toString(),
-    ...user,
-    password: hashedPassword,
-  };
+  const saltRounds = 10;
+  try {
+    const salt = await genSalt(saltRounds);
 
-  usersCollection.push(newUser);
+    const hashedPassword = await hash(password, salt);
 
-  return newUser;
+    const newUser = {
+      // Generate a random id
+      id: crypto.randomUUID().toString(),
+      username,
+      email,
+      password: hashedPassword,
+    };
+
+    usersCollection.push(newUser);
+  } catch (error) {}
 };
 
 // Función para obtener usuario por id
